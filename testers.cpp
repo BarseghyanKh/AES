@@ -59,40 +59,37 @@ void testers::mod_inverse() {
 	std::cout << value << std::endl;
 }
 
-void testers::create_S_box() {
+void testers::test_subBytes() {
+	std::vector<byte> input = { 0x32, 0x43, 0xf6, 0xa8, 0x88, 0x5a, 0x30, 0x8d, 
+								0x31, 0x31, 0x98, 0xa2, 0xe0, 0x37, 0x07, 0x34 };
+	Aes<128> a(input);
 
+	std::vector<word> result = a.cipher();
 
-	s_box_helper::print_box();
-	std::cout << std::endl;
-	s_box_helper::print_inverse_box();
-	/*std::vector <std::vector<byte>> S_box(16, std::vector<byte>(16));
-	for (int i = 0; i < S_box.size(); ++i) {
-		for (int j = 0; j < S_box[0].size(); ++j) {
-			S_box[i][j] = byte((i << 4) ^ j).get_inverse().apply_matrix_for_S_box();
-		}
-	}
+	std::vector<word> golden = { word({0xd4, 0x27, 0x11, 0xae}), word({0xe0, 0xbf, 0x98, 0xf1}),
+								 word({0xb8, 0xb4, 0x5d, 0xe5}), word({0x1e, 0x41, 0x52, 0x30}) };
+	std::cout << std::equal(result.begin(), result.end(), golden.begin(), golden.end()) << std::endl;
+}
 
-	for (int i = 0; i < S_box.size(); ++i) {
-		for (int j = 0; j < S_box[0].size(); ++j) {
-			std::cout << S_box[i][j] << " ";
-		}
-		std::cout << std::endl;
-	}
-	std::cout << std::endl;
-	std::vector <std::vector<byte>> S_box_inverse(16, std::vector<byte>(16));
-	for (int i = 0; i < S_box.size(); ++i) {
-		for (int j = 0; j < S_box[0].size(); ++j) {
-			int value = static_cast<int>(S_box[i][j]);
-			int indexi = value / 16;
-			int indexj = value % 16;
-			S_box_inverse[indexi][indexj] = byte((i << 4) ^ j);
-		}
-		
-	}
-	for (int i = 0; i < S_box.size(); ++i) {
-		for (int j = 0; j < S_box_inverse[0].size(); ++j) {
-			std::cout << S_box_inverse[i][j] << " ";
-		}
-		std::cout << std::endl;
-	}*/
+void testers::test_shiftRows() {
+	std::vector<byte> input = { 0x32, 0x43, 0xf6, 0xa8, 0x88, 0x5a, 0x30, 0x8d,
+								0x31, 0x31, 0x98, 0xa2, 0xe0, 0x37, 0x07, 0x34 };
+	Aes<128> a(input);
+
+	std::vector<word> result = a.cipher();
+
+	std::vector<word> golden = { word({0xd4, 0xbf, 0x5d, 0x30}), word({0xe0, 0xb4, 0x52, 0xae}),
+								 word({0xb8, 0x41, 0x11, 0xf1}), word({0x1e, 0x27, 0x98, 0xe5}) };
+	std::cout << std::equal(result.begin(), result.end(), golden.begin(), golden.end()) << std::endl;
+}
+
+void testers::test_addRoundKey() {
+	std::vector<byte> input = { 0x32, 0x43, 0xf6, 0xa8, 0x88, 0x5a, 0x30, 0x8d,
+								0x31, 0x31, 0x98, 0xa2, 0xe0, 0x37, 0x07, 0x34 };
+	Aes<128> a(input);
+	std::vector<word> result = a.cipher();
+
+	std::vector<word> golden = { word({0x19, 0x3d, 0xe3, 0xbe}), word({0xa0, 0xf4, 0xe2, 0x2b}),
+								 word({0x9a, 0xc6, 0x8d, 0x2a}), word({0xe9, 0xf8, 0x48, 0x08}) };
+	std::cout << std::equal(result.begin(), result.end(), golden.begin(), golden.end()) << std::endl;
 }

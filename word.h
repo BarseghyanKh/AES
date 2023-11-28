@@ -24,6 +24,27 @@ namespace my_cryptography_lib {
 		byte& operator[](std::size_t index);
 
 
+	/*	bool operator<(const word& rhs)  const {
+			
+			return m_value < rhs.m_value;
+		}
+		bool operator<=(const word& rhs) const {
+			return m_value <= rhs.m_value;
+		}
+		bool operator>(const word& rhs) const {
+			return m_value > rhs.m_value;
+		}
+		bool operator>=(const word& rhs) const {
+			return m_value >= rhs.m_value;
+		}*/
+		bool operator==(const word& rhs) const {
+			return std::equal(m_value.begin(), m_value.end(), rhs.m_value.begin(), rhs.m_value.end());
+			//return m_value == rhs.m_value;
+		}
+		/*bool operator!=(const word& rhs) const {
+			return m_value != rhs.m_value;
+		}*/
+
 	private:
 		std::vector<byte> m_value;
 	};

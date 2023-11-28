@@ -7,7 +7,7 @@
 
 namespace my_cryptography_lib {
 
-	const s_box box(is_inverse(true));
+	const s_box box(is_inverse(false));
 	const s_box inverse_box(is_inverse(true));
 
 	template <std::size_t T>
@@ -48,35 +48,63 @@ namespace my_cryptography_lib {
 		{
 			std::generate_n(back_inserter(plaintext), m_value.Nk, []() {return word(); });
 		}
+		Aes(std::vector<byte> input) {
+			word w;
+			for (int i = 0; i < input.size(); ++i) {
+				if (i != 0 && (i % 4 == 0)) {
+					plaintext.push_back(w);
+				}
+				w[i % 4] = input[i];
+			}
+			plaintext.push_back(w);
+		}
 		void print_plaintext() const {
 			std::copy(plaintext.begin(), plaintext.end(), std::ostream_iterator<word>(std::cout << "\n"));
 		}
 
 		std::vector<word> cipher() {
+			std::vector<word> round_key = { 
+							word({0x2b, 0x7e, 0x15, 0x16}), word({0x28, 0xae, 0xd2, 0xa6}),
+							word({0xab, 0xf7, 0x15, 0x88}), word({0x09, 0xcf, 0x4f, 0x3c}) };
+
 			std::vector<word> state(plaintext.begin(), plaintext.begin() + m_value.Nb);
+			state =  AddRountKey(state, round_key);
+			state =  SubBytes(state);
+			return ShiftRows(state);
 		}
 
 		void RotWord() {}
-		void ShiftRows() {}
-
-
+		std::vector<word> ShiftRows(std::vector<word> state) {
+			std::vector<word> result(state.size());
+			int word_size = 4;
+			for (int r = 0; r < word_size; ++r) {
+				for (int c = 0; c < state.size(); ++c) {
+					result[c][r] = state[(c + r) % m_value.Nb][r];
+				}
+			}
+			return result;
+		}
 		std::vector<word> SubBytes(std::vector<word> state) {
 			std::vector<word> state_result;
-			state_result[0] = state[0];
-
-
 			for (int i = 0; i < state.size(); ++i) {
-
+				word w = state[i];
+				for (int j = 0; j < 4; ++j) {
+					w[j] = box[w[j]];
+				}
+				state_result.push_back(w);
 			}
-
-			std::size_t byte_count_in_word = 4;
-			for(int i = 0; i < byte_count_in_word; ++i){
-				word w;
-				w[i] = box[state[0][i]];
-			}
-			
+			return state_result;
 		}
+
+		
 		void SubWord() {}
+
+		std::vector<word> AddRountKey(std::vector<word> state, std::vector<word> round_key) {
+			std::vector<word> result;
+			transform(state.begin(), state.end(), round_key.begin(), back_inserter(result),
+				std::plus<word>());
+			return result;
+		}
 	};
 
 }

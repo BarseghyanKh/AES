@@ -19,6 +19,11 @@ struct testers {
 	void id_divisor();
 	void euclidean_extended();
 
+	void test_subBytes();
+	void test_shiftRows();
+	void test_addRoundKey();
+
+
 	void mod_inverse();
 	void create_S_box();
 };

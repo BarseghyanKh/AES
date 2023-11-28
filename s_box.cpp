@@ -11,4 +11,11 @@ namespace my_cryptography_lib {
 		const int indexj = value % 16;
 		return matrix[indexi][indexj];
 	}
+	std::ostream& operator<<(std::ostream& out, const s_box& rhs) {
+		std::for_each(rhs.matrix.begin(), rhs.matrix.end(), [&](auto& row) {
+			std::copy(row.begin(), row.end(), std::ostream_iterator<byte>(out, " "));
+			std::cout << std::endl;
+			});
+		return out;
+	}
 }

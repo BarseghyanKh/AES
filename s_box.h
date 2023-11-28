@@ -11,6 +11,8 @@ namespace my_cryptography_lib {
 	};
 
 	class s_box {
+		using value_type = std::vector<std::vector<byte>>;
+		friend std::ostream& operator<<(std::ostream& out, const s_box& rhs);
 	public:
 		s_box(is_inverse is_matrix_inverse = is_inverse(false));
 

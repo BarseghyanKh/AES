@@ -7,13 +7,12 @@ byte get_inverse(byte g, byte m) {
 	return 0;
 }
 
-
-
-
 int main() {
+
 	try {
 		testers t;
-		t.create_S_box();
+		t.test_shiftRows();
+
 		//t.mod_inverse();
 		//t.euclidean_extended();
 		//t.id_divisor();
