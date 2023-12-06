@@ -8,6 +8,7 @@
 #include <numeric>
 #include <random>
 #include <iterator>
+#include <functional>
 
 
 

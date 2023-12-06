@@ -65,4 +65,20 @@ namespace my_cryptography_lib {
 	const byte& word::operator[](std::size_t index)const {
 		return m_value[index];
 	}
+	word word::SubWord() const {
+		word result;
+		std::transform(m_value.begin(), m_value.end(), result.m_value.begin(), std::mem_fn(&byte::SubByte));
+		/*for (int j = 0; j < 4; ++j) {
+			result[j] = m_value[j].SubByte();
+		}*/
+		return result;
+	}
+	word word::InverseSubWord() const {
+		word result;
+		std::transform(m_value.begin(), m_value.end(), result.m_value.begin(), std::mem_fn(&byte::InverseSubByte));
+		/*for (int j = 0; j < 4; ++j) {
+			result[j] = m_value[j].InverseSubByte();
+		}*/
+		return result;
+	}
 }

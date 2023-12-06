@@ -7,9 +7,6 @@
 
 namespace my_cryptography_lib {
 
-	const s_box box(is_inverse(false));
-	const s_box inverse_box(is_inverse(true));
-
 	template <std::size_t T>
 	struct AES_type {
 		static_assert(std::is_same<T, T>::value, "Using the generic template is not allowed.");
@@ -88,9 +85,8 @@ namespace my_cryptography_lib {
 		}
 		std::vector<word> SubBytes(std::vector<word> state) {
 			std::vector<word> state_result;
-			for (int i = 0; i < state.size(); ++i) {
-				state_result.push_back(SubWord(state[i]));
-			}
+			state_result.reserve(state.size());
+			std::transform(state.begin(), state.end(), std::back_inserter(state_result), std::mem_fn(&word::SubWord));
 			return state_result;
 		}
 		std::vector<word> MixColumns(std::vector<word> state) {
@@ -109,11 +105,7 @@ namespace my_cryptography_lib {
 			return result;
 		}
 		word SubWord(const word& w) {
-			word result;
-			for (int j = 0; j < 4; ++j) {
-				result[j] = box[w[j]];
-			}
-			return result;
+			return w.SubWord();
 		}
 
 		std::vector<word> AddRountKey(std::vector<word> state, std::vector<word> round_key) {

@@ -6,7 +6,7 @@
 
 
 namespace my_cryptography_lib {
-
+	class s_box;
 	class byte {
 		friend std::ostream& operator<<(std::ostream& out, const byte& rhs);
 		std::vector<byte> extended_euclidean() const;
@@ -40,7 +40,6 @@ namespace my_cryptography_lib {
 			byte result(*this);
 			return result *= rhs;
 		}
-
 		byte& operator<<=(const std::size_t count) {
 			m_value <<= count;
 			return *this;
@@ -49,16 +48,12 @@ namespace my_cryptography_lib {
 			byte temp(*this);
 			return temp <<= count;
 		}
-
 		std::pair<byte, byte> id_divisor() const;
 		byte& operator/=(const byte& rhs); 
-
-
 		byte operator/(const byte& rhs) const {
 			byte result(*this);
 			return result /= rhs;
 		}
-
 		bool operator<(const byte& rhs)  const{
 			return m_value < rhs.m_value;
 		}
@@ -103,11 +98,17 @@ namespace my_cryptography_lib {
 		std::uint8_t get() const {
 			return m_value;
 		}
+
+		byte SubByte() const;
+		byte InverseSubByte() const;
 	private:
 		static const uint8_t identity;
 		std::uint8_t m_value;
 		static const std::vector<byte> matrix_for_S_box;
 		static const byte c;
+
+		static const s_box* box_ptr;
+		static const s_box* inverse_box_ptr;
 	};
 }
 

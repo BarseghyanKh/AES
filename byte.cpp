@@ -1,4 +1,5 @@
 #include "byte.h"
+#include "s_box.h"
 
 namespace my_cryptography_lib {
 
@@ -162,11 +163,19 @@ namespace my_cryptography_lib {
 			});
 	}
 
+	byte byte::SubByte() const {
+		return (*box_ptr)[*this];
+	}
+	byte byte::InverseSubByte() const {
+		return (*inverse_box_ptr)[*this];
+	}
 
 	const byte byte::c = 0x63;
 	const std::vector<byte> byte::matrix_for_S_box = { 0x1f, 0x3e, 0x7c, 0xf8, 0xf1,0xe3,0xc7,0x8f };
 	const uint8_t byte::identity = 0x1b;
 
+	const s_box* byte::box_ptr = new s_box(is_inverse(false));
+	const s_box* byte::inverse_box_ptr = new s_box(is_inverse(true));
 
 }
 
