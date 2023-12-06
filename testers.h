@@ -23,7 +23,8 @@ struct testers {
 	void test_shiftRows();
 	void test_addRoundKey();
 
-
+	void test_modular_product();
+	void test_MixColumns();
 	void mod_inverse();
 	void create_S_box();
 };

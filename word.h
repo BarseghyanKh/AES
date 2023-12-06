@@ -22,6 +22,7 @@ namespace my_cryptography_lib {
 		word modular_product(const word& rhs) const;
 
 		byte& operator[](std::size_t index);
+		const byte& operator[](std::size_t index)const;
 
 
 	/*	bool operator<(const word& rhs)  const {

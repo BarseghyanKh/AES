@@ -46,7 +46,8 @@ namespace my_cryptography_lib {
 		return out;
 	}
 	word word::modular_product(const word& rhs) const {
-		word result;
+		word result{byte(0x00), byte(0x00), byte(0x00), byte(0x00)};
+
 		for (int i = 0; i < m_value.size(); ++i) {
 			for (int j = 0; j < rhs.m_value.size(); ++j) {
 				int index = (i + j) % 4;
@@ -59,6 +60,9 @@ namespace my_cryptography_lib {
 		if (index < 0 || index >= m_value.size()) {
 			throw std::out_of_range("Index out of range in word::operator[] !");
 		}
+		return m_value[index];
+	}
+	const byte& word::operator[](std::size_t index)const {
 		return m_value[index];
 	}
 }

@@ -3,15 +3,16 @@
 using namespace my_cryptography_lib;
 
 
-byte get_inverse(byte g, byte m) {
-	return 0;
-}
-
 int main() {
 
+	
 	try {
+
+
 		testers t;
-		t.test_shiftRows();
+		t.test_subBytes();
+		//t.test_MixColumns();
+		//t.test_shiftRows();
 
 		//t.mod_inverse();
 		//t.euclidean_extended();

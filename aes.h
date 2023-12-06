@@ -70,10 +70,12 @@ namespace my_cryptography_lib {
 			std::vector<word> state(plaintext.begin(), plaintext.begin() + m_value.Nb);
 			state =  AddRountKey(state, round_key);
 			state =  SubBytes(state);
+			state = ShiftRows(state);
+			state = MixColumns(state);
+
 			return ShiftRows(state);
 		}
 
-		void RotWord() {}
 		std::vector<word> ShiftRows(std::vector<word> state) {
 			std::vector<word> result(state.size());
 			int word_size = 4;
@@ -87,17 +89,32 @@ namespace my_cryptography_lib {
 		std::vector<word> SubBytes(std::vector<word> state) {
 			std::vector<word> state_result;
 			for (int i = 0; i < state.size(); ++i) {
-				word w = state[i];
-				for (int j = 0; j < 4; ++j) {
-					w[j] = box[w[j]];
-				}
-				state_result.push_back(w);
+				state_result.push_back(SubWord(state[i]));
 			}
 			return state_result;
 		}
-
+		std::vector<word> MixColumns(std::vector<word> state) {
+			std::vector<word> state_result;
+			word a({ 0x02, 0x01, 0x01, 0x03 });
+			std::transform(state.begin(), state.end(), std::back_inserter(state_result),
+				[&a](const word& w) { return a.modular_product(w); });
+			return state_result;
+		}
 		
-		void SubWord() {}
+		word RotWord(const word& w) {
+			word result;
+			for (int i = 0; i < 4; ++i) {
+				result[i] = w[(i + 1) % 4];
+			}
+			return result;
+		}
+		word SubWord(const word& w) {
+			word result;
+			for (int j = 0; j < 4; ++j) {
+				result[j] = box[w[j]];
+			}
+			return result;
+		}
 
 		std::vector<word> AddRountKey(std::vector<word> state, std::vector<word> round_key) {
 			std::vector<word> result;

@@ -1,5 +1,6 @@
 #ifndef S_BOX_HELPER_H
 #define S_BOX_H_HELPER_H
+
 #include "headers.h"
 #include "byte.h"
 

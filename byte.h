@@ -4,6 +4,7 @@
 #include "headers.h"
 //#include "random_functions.h"
 
+
 namespace my_cryptography_lib {
 
 	class byte {
