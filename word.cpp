@@ -81,4 +81,10 @@ namespace my_cryptography_lib {
 		}*/
 		return result;
 	}
+
+	word word::RotWord() const {
+		word result;
+		std::rotate_copy(m_value.begin(), m_value.begin() + 1, m_value.end(), result.m_value.begin());
+		return result;
+	}
 }

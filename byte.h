@@ -107,8 +107,9 @@ namespace my_cryptography_lib {
 		static const std::vector<byte> matrix_for_S_box;
 		static const byte c;
 
-		static const s_box* box_ptr;
-		static const s_box* inverse_box_ptr;
+		static const std::unique_ptr<s_box> box_ptr;
+		static const std::unique_ptr<s_box> inverse_box_ptr;
+
 	};
 }
 

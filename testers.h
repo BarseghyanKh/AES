@@ -27,6 +27,9 @@ struct testers {
 	void test_MixColumns();
 	void mod_inverse();
 	void create_S_box();
+	void test_generate_rcon();
+	void test_KeyExpnsion();
+	void test_cypher();
 };
 
 

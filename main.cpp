@@ -4,22 +4,25 @@ using namespace my_cryptography_lib;
 
 
 int main() {
-
-	
 	try {
-
-
+		
+			
+			
+			
 		testers t;
-		t.test_subBytes();
-		//t.test_MixColumns();
-		//t.test_shiftRows();
+		t.test_cypher();
+		//t.test_KeyExpnsion();
+		//t.test_generate_rcon();
+		//t.test_subBytes();
+		/*t.test_MixColumns();
+		t.test_shiftRows();
 
-		//t.mod_inverse();
-		//t.euclidean_extended();
-		//t.id_divisor();
-		//t.div_test();
+		t.mod_inverse();
+		t.euclidean_extended();
+		t.id_divisor();
+		t.div_test();
 
-		/*t.aes();
+		t.aes();
 
 		t.byte();
 		t.word()*/

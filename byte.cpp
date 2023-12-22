@@ -174,8 +174,9 @@ namespace my_cryptography_lib {
 	const std::vector<byte> byte::matrix_for_S_box = { 0x1f, 0x3e, 0x7c, 0xf8, 0xf1,0xe3,0xc7,0x8f };
 	const uint8_t byte::identity = 0x1b;
 
-	const s_box* byte::box_ptr = new s_box(is_inverse(false));
-	const s_box* byte::inverse_box_ptr = new s_box(is_inverse(true));
+	const std::unique_ptr<s_box> byte::box_ptr = std::make_unique<s_box>(is_inverse(false));
+	const std::unique_ptr<s_box> byte::inverse_box_ptr = std::make_unique<s_box>(is_inverse(true));
+
 
 }
 

@@ -25,7 +25,7 @@ namespace my_cryptography_lib {
 		const byte& operator[](std::size_t index)const;
 		word SubWord() const;
 		word InverseSubWord() const;
-		
+		word RotWord() const;
 
 	/*	bool operator<(const word& rhs)  const {
 			
