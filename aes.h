@@ -178,8 +178,6 @@ namespace my_cryptography_lib {
 			std::copy(w.begin(), w.begin() + m_value.Nb, round_key.begin());
 			AddRountKey(state, round_key);
 
-			std::cout << std::equal(state.begin(), state.end(), plaintext.begin(), plaintext.end());
-			std::cout << std::endl;
 			return state;
 		}
 		void InvShiftRows(std::vector<word>& state) const {
