@@ -21,7 +21,7 @@ int main() {
 		//t.multiple_test();
 		//t.test_inv_cipher256(input, key);
 		//t.test_cipher256(input, key);
-		//t.test_inv_cipher192(input, key);
+		t.test_inv_cipher192(input, key);
 		//t.test_cipher192(input, key);
 		//t.test_eq_inv_cipher(input, key);
 		//t.test_inv_cipher(input, key);
