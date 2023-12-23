@@ -39,7 +39,7 @@ namespace my_cryptography_lib {
 
 		std::vector<word> cypher_key;
 		std::vector<word> plaintext;
-		std::vector<word> cyphertext;
+		std::vector<word> ciphertext;
 	public:
 		Aes()
 			//:plaintext{ word(), word(), word(), word() }
@@ -56,7 +56,7 @@ namespace my_cryptography_lib {
 			std::copy(plaintext.begin(), plaintext.end(), std::ostream_iterator<word>(std::cout << "\n"));
 		}
 
-		void print_state(const std::vector<word>& state) {
+		void print_state(const std::vector<word>& state) const {
 			std::copy(state.begin(), state.end(), std::ostream_iterator<word>(std::cout, "\n"));
 			std::cout << std::endl;
 		}
@@ -76,10 +76,11 @@ namespace my_cryptography_lib {
 			ShiftRows(state);
 			std::copy(w.begin() + (m_value.Nr * m_value.Nb), w.begin() + (m_value.Nr + 1) * m_value.Nb, round_key.begin());
 			AddRountKey(state, round_key);
+			ciphertext = state;
 			return state;
 		}
 
-		void ShiftRows(std::vector<word>& state) {
+		void ShiftRows(std::vector<word>& state) const{
 			std::vector<word> result(state.size());
 			int word_size = 4;
 			for (int r = 0; r < word_size; ++r) {
@@ -89,13 +90,13 @@ namespace my_cryptography_lib {
 			}
 			std::swap(state, result);
 		}
-		void SubBytes(std::vector<word>& state) {
+		void SubBytes(std::vector<word>& state) const{
 			std::vector<word> state_result;
 			state_result.reserve(state.size());
 			std::transform(state.begin(), state.end(), std::back_inserter(state_result), std::mem_fn(&word::SubWord));
 			std::swap(state, state_result);
 		}
-		void MixColumns(std::vector<word>& state) {
+		void MixColumns(std::vector<word>& state) const{
 			std::vector<word> state_result;
 			word a({ 0x02, 0x01, 0x01, 0x03 });
 			std::transform(state.begin(), state.end(), std::back_inserter(state_result),
@@ -103,21 +104,20 @@ namespace my_cryptography_lib {
 			std::swap(state, state_result);
 		}
 
-		word RotWord(const word& w) {
+		word RotWord(const word& w) const{
 			return w.RotWord();
 		}
-		word SubWord(const word& w) {
+		word SubWord(const word& w) const{
 			return w.SubWord();
 		}
 
-		void AddRountKey(std::vector<word>& state, std::vector<word> round_key) {
+		void AddRountKey(std::vector<word>& state, std::vector<word> round_key)const {
 			
 			transform(state.begin(), state.end(), round_key.begin(), state.begin(),
 				std::plus<word>());
 		
 		}
-
-		std::vector<word> KeyExpnsion() {
+		std::vector<word> KeyExpnsion() const {
 			std::vector<word> Rcon = generate_Rcon();
 			word temp;
 			std::vector<word> w;
@@ -138,8 +138,7 @@ namespace my_cryptography_lib {
 			}
 			return w;
 		}
-
-		std::vector<word> generate_Rcon() {
+		std::vector<word> generate_Rcon() const {
 			std::vector<word> Rcon;
 			int length = m_value.Nb * (m_value.Nr + 1) / m_value.Nk + 1;
 			Rcon.reserve(length);
@@ -149,6 +148,49 @@ namespace my_cryptography_lib {
 				w[0].xtime();
 				return temp; });
 			return Rcon;
+		}
+
+		std::vector<word> InvCipher() {
+			std::vector<word> w = KeyExpnsion();
+			std::vector<word> state = ciphertext;
+			std::vector<word> round_key(w.begin() + (m_value.Nr * m_value.Nb), w.begin() + (m_value.Nr + 1) * m_value.Nb);
+			AddRountKey(state, round_key);
+			for (int round = m_value.Nr - 1; round > 0; --round) {
+				InvShiftRows(state);
+				InvSubBytes(state);
+				std::copy(w.begin() + (round * m_value.Nb), w.begin() + (round + 1) * m_value.Nb, round_key.begin());
+				AddRountKey(state, round_key);
+				InvMixColumns(state);
+			}
+			InvShiftRows(state);
+			InvSubBytes(state);
+			std::copy(w.begin(), w.begin() + m_value.Nb, round_key.begin());
+			AddRountKey(state, round_key);
+			return state;
+		}
+		void InvShiftRows(std::vector<word>& state) const {
+			std::vector<word> result(state.size());
+			int word_size = 4;
+			for (int r = 0; r < word_size; ++r) {
+				for (int c = 0; c < state.size(); ++c) {
+					result[(c + r) % m_value.Nb][r] = state[c][r];
+				}
+			}
+			std::swap(state, result);
+		}
+		void InvSubBytes(std::vector<word>& state) const  {
+			std::vector<word> state_result;
+			state_result.reserve(state.size());
+			std::transform(state.begin(), state.end(), std::back_inserter(state_result), std::mem_fn(&word::InverseSubWord));
+			std::swap(state, state_result);
+		}
+		void InvMixColumns(std::vector<word>& state)const  {
+			std::vector<word> state_result;
+			word a({ 0x02, 0x01, 0x01, 0x03 });
+			word a_inverse({ 0x0e, 0x09, 0x0d, 0x0b });
+			std::transform(state.begin(), state.end(), std::back_inserter(state_result),
+				[&a_inverse](const word& w) { return a_inverse.modular_product(w); });
+			std::swap(state, state_result);
 		}
 	private:
 		static std::vector<word> convert_byte_to_word_array(const std::vector<byte>& byte_array) {
