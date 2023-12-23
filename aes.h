@@ -31,11 +31,11 @@ namespace my_cryptography_lib {
 		static constexpr std::size_t Nr = 14;
 	};
 
-	template <std::size_t Bit_counts>
+	template <std::size_t Bits_count>
 	class Aes {
 	private:
 		// AES type 128, 192, 256
-		static constexpr AES_type<Bit_counts> m_value = {};
+		static constexpr AES_type<Bits_count> m_value = {};
 
 		std::vector<word> cypher_key;
 		std::vector<word> plaintext;
@@ -49,6 +49,14 @@ namespace my_cryptography_lib {
 		}
 
 		Aes(const std::vector<byte>& input, const std::vector<byte>& key) {
+			if (Bits_count != key.size() * 8) {
+				throw std::invalid_argument("Key size must match template size");
+			}
+			if (16 != input.size()) {
+				throw std::invalid_argument("Plaintext must be 128 bits");
+			}
+
+
 			plaintext = convert_byte_to_word_array(input);
 			cypher_key = convert_byte_to_word_array(key);
 		}
