@@ -18,9 +18,10 @@ int main() {
 								  0xab, 0xf7, 0x15, 0x88, 0x09, 0xcf, 0x4f, 0x3c };*/
 			
 		testers t;
+		//t.multiple_test();
 		//t.test_inv_cipher256(input, key);
 		//t.test_cipher256(input, key);
-		t.test_inv_cipher192(input, key);
+		//t.test_inv_cipher192(input, key);
 		//t.test_cipher192(input, key);
 		//t.test_eq_inv_cipher(input, key);
 		//t.test_inv_cipher(input, key);

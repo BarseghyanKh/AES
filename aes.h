@@ -159,6 +159,9 @@ namespace my_cryptography_lib {
 		}
 
 		std::vector<word> InvCipher() const{
+			if (ciphertext.size() != plaintext.size()) {
+				throw std::invalid_argument("Ciphertext is not valid");
+			}
 			std::vector<word> w = KeyExpnsion();
 			std::vector<word> state = ciphertext;
 			std::vector<word> round_key(w.begin() + (m_value.Nr * m_value.Nb), w.begin() + (m_value.Nr + 1) * m_value.Nb);
@@ -174,6 +177,9 @@ namespace my_cryptography_lib {
 			InvSubBytes(state);
 			std::copy(w.begin(), w.begin() + m_value.Nb, round_key.begin());
 			AddRountKey(state, round_key);
+
+			std::cout << std::equal(state.begin(), state.end(), plaintext.begin(), plaintext.end());
+			std::cout << std::endl;
 			return state;
 		}
 		void InvShiftRows(std::vector<word>& state) const {
@@ -233,6 +239,9 @@ namespace my_cryptography_lib {
 			return dw;
 		}
 		std::vector<word> EqInvCipher() const{
+			if (ciphertext.size() != plaintext.size()) {
+				throw std::invalid_argument("Ciphertext is not valid");
+			}
 			std::vector<word> dw = EqKeyExpnsion();
 			std::vector<word> state = ciphertext;
 			std::vector<word> round_key(dw.begin() + (m_value.Nr * m_value.Nb), dw.begin() + (m_value.Nr + 1) * m_value.Nb);
@@ -248,6 +257,9 @@ namespace my_cryptography_lib {
 			InvShiftRows(state);
 			std::copy(dw.begin(), dw.begin() + m_value.Nb, round_key.begin());
 			AddRountKey(state, round_key);
+			
+
+			
 			return state;
 		}
 	private:

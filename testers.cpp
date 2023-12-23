@@ -205,3 +205,11 @@ void testers::test_inv_cipher256(std::vector<byte> input, std::vector<byte> key)
 	std::vector<word> plaintext = a.EqInvCipher();
 	std::copy(plaintext.begin(), plaintext.end(), std::ostream_iterator<word>(std::cout, "\n"));
 }
+void testers::multiple_test() {
+	for (int i = 0; i < 1000; ++i) {
+		Aes<128> a;
+		std::vector<word> cipher_text = a.cipher();
+		std::vector<word> plaintext = a.InvCipher();
+	}
+
+}
