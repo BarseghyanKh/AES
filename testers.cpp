@@ -176,3 +176,9 @@ void testers::test_inv_cipher(std::vector<byte> input, std::vector<byte> key) {
 	std::vector<word> plaintext = a.InvCipher();
 	std::copy(plaintext.begin(), plaintext.end(), std::ostream_iterator<word>(std::cout, "\n"));
 }
+void testers::test_eq_inv_cipher(std::vector<byte> input, std::vector<byte> key) {
+	Aes<128> a(input, key);
+	std::vector<word> cipher_text = a.cipher();
+	std::vector<word> plaintext = a.EqInvCipher();
+	std::copy(plaintext.begin(), plaintext.end(), std::ostream_iterator<word>(std::cout, "\n"));
+}

@@ -150,7 +150,7 @@ namespace my_cryptography_lib {
 			return Rcon;
 		}
 
-		std::vector<word> InvCipher() {
+		std::vector<word> InvCipher() const{
 			std::vector<word> w = KeyExpnsion();
 			std::vector<word> state = ciphertext;
 			std::vector<word> round_key(w.begin() + (m_value.Nr * m_value.Nb), w.begin() + (m_value.Nr + 1) * m_value.Nb);
@@ -191,6 +191,56 @@ namespace my_cryptography_lib {
 			std::transform(state.begin(), state.end(), std::back_inserter(state_result),
 				[&a_inverse](const word& w) { return a_inverse.modular_product(w); });
 			std::swap(state, state_result);
+		}
+
+		std::vector<word> EqKeyExpnsion() const {
+			std::vector<word> Rcon = generate_Rcon();
+			word temp;
+			std::vector<word> w;
+			w.reserve(m_value.Nb * (m_value.Nr + 1));
+			std::copy(cypher_key.begin(), cypher_key.end(), std::back_inserter(w));
+
+			int i = m_value.Nk;
+			while (i < m_value.Nb * (m_value.Nr + 1)) {
+				temp = w[i - 1];
+				if (0 == i % m_value.Nk) {
+					temp = SubWord(RotWord(temp)) + Rcon[i / m_value.Nk - 1];
+				}
+				else if (m_value.Nk > 6 && i % m_value.Nk == 4) {
+					temp = SubWord(temp);
+				}
+				w.push_back(w[i - m_value.Nk] + temp);
+				++i;
+			}
+			std::vector<word> dw;
+			dw.reserve(m_value.Nb * (m_value.Nr + 1));
+			std::copy(w.begin(), w.begin() + (m_value.Nr + 1) * m_value.Nb, std::back_inserter(dw));
+			for (int round = 1; round < m_value.Nr; ++round) {
+				std::vector<word> temp_dw;
+				temp_dw.reserve(m_value.Nb);
+				std::copy(dw.begin() + (round * m_value.Nb), dw.begin() + (round + 1) * m_value.Nb, std::back_inserter( temp_dw));
+				InvMixColumns(temp_dw);
+				std::copy(temp_dw.begin(), temp_dw.end(), dw.begin() + (round * m_value.Nb));
+			}
+			return dw;
+		}
+		std::vector<word> EqInvCipher() const{
+			std::vector<word> dw = EqKeyExpnsion();
+			std::vector<word> state = ciphertext;
+			std::vector<word> round_key(dw.begin() + (m_value.Nr * m_value.Nb), dw.begin() + (m_value.Nr + 1) * m_value.Nb);
+			AddRountKey(state, round_key);
+			for (int round = m_value.Nr - 1; round > 0; --round) {
+				InvSubBytes(state);
+				InvShiftRows(state);
+				InvMixColumns(state);
+				std::copy(dw.begin() + (round * m_value.Nb), dw.begin() + (round + 1) * m_value.Nb, round_key.begin());
+				AddRountKey(state, round_key);
+			}
+			InvSubBytes(state);
+			InvShiftRows(state);
+			std::copy(dw.begin(), dw.begin() + m_value.Nb, round_key.begin());
+			AddRountKey(state, round_key);
+			return state;
 		}
 	private:
 		static std::vector<word> convert_byte_to_word_array(const std::vector<byte>& byte_array) {

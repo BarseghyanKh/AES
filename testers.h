@@ -33,6 +33,7 @@ struct testers {
 	void test_inv_cipher();
 	void test_cipher(std::vector<byte> input, std::vector<byte> key);
 	void test_inv_cipher(std::vector<byte> input, std::vector<byte> key);
+	void test_eq_inv_cipher(std::vector<byte> input, std::vector<byte> key);
 };
 
 
