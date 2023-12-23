@@ -29,7 +29,7 @@ struct testers {
 	void create_S_box();
 	void test_generate_rcon();
 	void test_KeyExpnsion();
-	void test_cypher();
+	void test_cipher();
 	void test_inv_cipher();
 	void test_cipher(std::vector<byte> input, std::vector<byte> key);
 	void test_inv_cipher(std::vector<byte> input, std::vector<byte> key);

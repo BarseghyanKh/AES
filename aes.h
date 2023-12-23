@@ -37,15 +37,15 @@ namespace my_cryptography_lib {
 		// AES type 128, 192, 256
 		static constexpr AES_type<Bits_count> m_value = {};
 
-		std::vector<word> cypher_key;
+		std::vector<word> cipher_key;
 		std::vector<word> plaintext;
 		std::vector<word> ciphertext;
 	public:
 		Aes()
 			//:plaintext{ word(), word(), word(), word() }
 		{
-			std::generate_n(back_inserter(plaintext), m_value.Nk, []() {return word(); });
-			std::generate_n(back_inserter(cypher_key), m_value.Nk, []() {return word(); });
+			std::generate_n(back_inserter(plaintext), m_value.Nb, []() {return word(); });
+			std::generate_n(back_inserter(cipher_key), m_value.Nk, []() {return word(); });
 		}
 
 		Aes(const std::vector<byte>& input, const std::vector<byte>& key) {
@@ -58,7 +58,7 @@ namespace my_cryptography_lib {
 
 
 			plaintext = convert_byte_to_word_array(input);
-			cypher_key = convert_byte_to_word_array(key);
+			cipher_key = convert_byte_to_word_array(key);
 		}
 		void print_plaintext() const {
 			std::copy(plaintext.begin(), plaintext.end(), std::ostream_iterator<word>(std::cout << "\n"));
@@ -126,25 +126,7 @@ namespace my_cryptography_lib {
 		
 		}
 		std::vector<word> KeyExpnsion() const {
-			std::vector<word> Rcon = generate_Rcon();
-			word temp;
-			std::vector<word> w;
-			w.reserve(m_value.Nb * (m_value.Nr + 1));
-			std::copy(cypher_key.begin(), cypher_key.end(), std::back_inserter(w));
-
-			int i = m_value.Nk;
-			while (i < m_value.Nb * (m_value.Nr + 1)){
-				temp = w[i - 1];
-				if (0 == i % m_value.Nk) {
-					temp = SubWord(RotWord(temp)) + Rcon[i / m_value.Nk - 1];
-				}
-				else if (m_value.Nk > 6 && i % m_value.Nk == 4) {
-					temp = SubWord(temp);
-				}
-				w.push_back(w[i - m_value.Nk] + temp);
-				++i;
-			}
-			return w;
+			return KeyExpnsionHelper();
 		}
 		std::vector<word> generate_Rcon() const {
 			std::vector<word> Rcon;
@@ -206,24 +188,8 @@ namespace my_cryptography_lib {
 		}
 
 		std::vector<word> EqKeyExpnsion() const {
-			std::vector<word> Rcon = generate_Rcon();
-			word temp;
-			std::vector<word> w;
-			w.reserve(m_value.Nb * (m_value.Nr + 1));
-			std::copy(cypher_key.begin(), cypher_key.end(), std::back_inserter(w));
-
-			int i = m_value.Nk;
-			while (i < m_value.Nb * (m_value.Nr + 1)) {
-				temp = w[i - 1];
-				if (0 == i % m_value.Nk) {
-					temp = SubWord(RotWord(temp)) + Rcon[i / m_value.Nk - 1];
-				}
-				else if (m_value.Nk > 6 && i % m_value.Nk == 4) {
-					temp = SubWord(temp);
-				}
-				w.push_back(w[i - m_value.Nk] + temp);
-				++i;
-			}
+			
+			std::vector<word> w = KeyExpnsionHelper();
 			std::vector<word> dw;
 			dw.reserve(m_value.Nb * (m_value.Nr + 1));
 			std::copy(w.begin(), w.begin() + (m_value.Nr + 1) * m_value.Nb, std::back_inserter(dw));
@@ -261,6 +227,27 @@ namespace my_cryptography_lib {
 			return state;
 		}
 	private:
+		std::vector<word> KeyExpnsionHelper() const {
+			std::vector<word> Rcon = generate_Rcon();
+			word temp;
+			std::vector<word> w;
+			w.reserve(m_value.Nb * (m_value.Nr + 1));
+			std::copy(cipher_key.begin(), cipher_key.end(), std::back_inserter(w));
+
+			int i = m_value.Nk;
+			while (i < m_value.Nb * (m_value.Nr + 1)) {
+				temp = w[i - 1];
+				if (0 == i % m_value.Nk) {
+					temp = SubWord(RotWord(temp)) + Rcon[i / m_value.Nk - 1];
+				}
+				else if (m_value.Nk > 6 && i % m_value.Nk == 4) {
+					temp = SubWord(temp);
+				}
+				w.push_back(w[i - m_value.Nk] + temp);
+				++i;
+			}
+			return w;
+		}
 		static std::vector<word> convert_byte_to_word_array(const std::vector<byte>& byte_array) {
 			word w;
 			std::vector<word> result;
