@@ -63,13 +63,9 @@ namespace my_cryptography_lib {
 		void print_plaintext() const {
 			std::copy(plaintext.begin(), plaintext.end(), std::ostream_iterator<word>(std::cout << "\n"));
 		}
-
-		void print_state(const std::vector<word>& state) const {
-			std::copy(state.begin(), state.end(), std::ostream_iterator<word>(std::cout, "\n"));
-			std::cout << std::endl;
-		}
-		std::vector<word> cipher() {
-			std::vector<word> w = KeyExpnsion();
+		
+		std::vector<word> Cipher() {
+			std::vector<word> w = KeyExpansion();
 			std::vector<word> state(plaintext.begin(), plaintext.begin() + m_value.Nb);
 			std::vector<word> round_key(w.begin(), w.begin() + m_value.Nb);
 			AddRountKey(state, round_key);
@@ -125,26 +121,16 @@ namespace my_cryptography_lib {
 				std::plus<word>());
 		
 		}
-		std::vector<word> KeyExpnsion() const {
-			return KeyExpnsionHelper();
+		std::vector<word> KeyExpansion() const {
+			return KeyExpansionHelper();
 		}
-		std::vector<word> generate_Rcon() const {
-			std::vector<word> Rcon;
-			int length = m_value.Nb * (m_value.Nr + 1) / m_value.Nk + 1;
-			Rcon.reserve(length);
-			word w{ 0x01, 0x00, 0x00, 0x00 };
-			std::generate_n(std::back_inserter(Rcon), length, [&w]() {
-				word temp = w;
-				w[0].xtime();
-				return temp; });
-			return Rcon;
-		}
+		
 
 		std::vector<word> InvCipher() const{
 			if (ciphertext.size() != plaintext.size()) {
 				throw std::invalid_argument("Ciphertext is not valid");
 			}
-			std::vector<word> w = KeyExpnsion();
+			std::vector<word> w = KeyExpansion();
 			std::vector<word> state = ciphertext;
 			std::vector<word> round_key(w.begin() + (m_value.Nr * m_value.Nb), w.begin() + (m_value.Nr + 1) * m_value.Nb);
 			AddRountKey(state, round_key);
@@ -187,9 +173,9 @@ namespace my_cryptography_lib {
 			std::swap(state, state_result);
 		}
 
-		std::vector<word> EqKeyExpnsion() const {
+		std::vector<word> EqKeyExpansion() const {
 			
-			std::vector<word> w = KeyExpnsionHelper();
+			std::vector<word> w = KeyExpansionHelper();
 			std::vector<word> dw;
 			dw.reserve(m_value.Nb * (m_value.Nr + 1));
 			std::copy(w.begin(), w.begin() + (m_value.Nr + 1) * m_value.Nb, std::back_inserter(dw));
@@ -206,7 +192,7 @@ namespace my_cryptography_lib {
 			if (ciphertext.size() != plaintext.size()) {
 				throw std::invalid_argument("Ciphertext is not valid");
 			}
-			std::vector<word> dw = EqKeyExpnsion();
+			std::vector<word> dw = EqKeyExpansion();
 			std::vector<word> state = ciphertext;
 			std::vector<word> round_key(dw.begin() + (m_value.Nr * m_value.Nb), dw.begin() + (m_value.Nr + 1) * m_value.Nb);
 			AddRountKey(state, round_key);
@@ -227,7 +213,22 @@ namespace my_cryptography_lib {
 			return state;
 		}
 	private:
-		std::vector<word> KeyExpnsionHelper() const {
+		void print_state(const std::vector<word>& state) const {
+			std::copy(state.begin(), state.end(), std::ostream_iterator<word>(std::cout, "\n"));
+			std::cout << std::endl;
+		}
+		std::vector<word> generate_Rcon() const {
+			std::vector<word> Rcon;
+			int length = m_value.Nb * (m_value.Nr + 1) / m_value.Nk + 1;
+			Rcon.reserve(length);
+			word w{ 0x01, 0x00, 0x00, 0x00 };
+			std::generate_n(std::back_inserter(Rcon), length, [&w]() {
+				word temp = w;
+				w[0].xtime();
+				return temp; });
+			return Rcon;
+		}
+		std::vector<word> KeyExpansionHelper() const {
 			std::vector<word> Rcon = generate_Rcon();
 			word temp;
 			std::vector<word> w;

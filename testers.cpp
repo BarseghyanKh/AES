@@ -84,7 +84,7 @@ void testers::test_shiftRows() {
 							0xab, 0xf7, 0x15, 0x88, 0x09, 0xcf, 0x4f, 0x3c };
 	Aes<128> a(input, key);
 
-	std::vector<word> result = a.cipher();
+	std::vector<word> result = a.Cipher();
 
 	std::vector<word> golden = { word({0xd4, 0xbf, 0x5d, 0x30}), word({0xe0, 0xb4, 0x52, 0xae}),
 								 word({0xb8, 0x41, 0x11, 0xf1}), word({0x1e, 0x27, 0x98, 0xe5}) };
@@ -97,7 +97,7 @@ void testers::test_addRoundKey() {
 	std::vector<byte> key = { 0x2b, 0x7e, 0x15, 0x16, 0x28, 0xae, 0xd2, 0xa6,
 							0xab, 0xf7, 0x15, 0x88, 0x09, 0xcf, 0x4f, 0x3c };
 	Aes<128> a(input, key);
-	std::vector<word> result = a.cipher();
+	std::vector<word> result = a.Cipher();
 
 	std::vector<word> golden = { word({0x19, 0x3d, 0xe3, 0xbe}), word({0xa0, 0xf4, 0xe2, 0x2b}),
 								 word({0x9a, 0xc6, 0x8d, 0x2a}), word({0xe9, 0xf8, 0x48, 0x08}) };
@@ -125,22 +125,22 @@ void testers::test_modular_product() {
 	std::cout << (a.modular_product(b) == result) << std::endl;
 }
 
-void testers::test_generate_rcon() {
-	std::vector<byte> input = { 0x32, 0x43, 0xf6, 0xa8, 0x88, 0x5a, 0x30, 0x8d,
-								0x31, 0x31, 0x98, 0xa2, 0xe0, 0x37, 0x07, 0x34 };
-	std::vector<byte> key = { 0x2b, 0x7e, 0x15, 0x16, 0x28, 0xae, 0xd2, 0xa6,
-							0xab, 0xf7, 0x15, 0x88, 0x09, 0xcf, 0x4f, 0x3c };
-	Aes<128> a(input, key);
-	std::vector<word> rc = a.generate_Rcon();
-	std::copy(rc.begin(), rc.end(), std::ostream_iterator<word>(std::cout, "\n"));
-}
+//void testers::test_generate_rcon() {
+//	std::vector<byte> input = { 0x32, 0x43, 0xf6, 0xa8, 0x88, 0x5a, 0x30, 0x8d,
+//								0x31, 0x31, 0x98, 0xa2, 0xe0, 0x37, 0x07, 0x34 };
+//	std::vector<byte> key = { 0x2b, 0x7e, 0x15, 0x16, 0x28, 0xae, 0xd2, 0xa6,
+//							0xab, 0xf7, 0x15, 0x88, 0x09, 0xcf, 0x4f, 0x3c };
+//	Aes<128> a(input, key);
+//	std::vector<word> rc = a.generate_Rcon();
+//	std::copy(rc.begin(), rc.end(), std::ostream_iterator<word>(std::cout, "\n"));
+//}
 void testers::test_KeyExpnsion() {
 	std::vector<byte> input = { 0x32, 0x43, 0xf6, 0xa8, 0x88, 0x5a, 0x30, 0x8d,
 								0x31, 0x31, 0x98, 0xa2, 0xe0, 0x37, 0x07, 0x34 };
 	std::vector<byte> key = { 0x2b, 0x7e, 0x15, 0x16, 0x28, 0xae, 0xd2, 0xa6,
 							0xab, 0xf7, 0x15, 0x88, 0x09, 0xcf, 0x4f, 0x3c };
 	Aes<128> a(input, key);
-	std::vector<word> w = a.KeyExpnsion();
+	std::vector<word> w = a.KeyExpansion();
 	std::copy(w.begin(), w.end(), std::ostream_iterator<word>(std::cout, "\n"));
 }
 void testers::test_cipher() {
@@ -149,7 +149,7 @@ void testers::test_cipher() {
 	std::vector<byte> key = { 0x2b, 0x7e, 0x15, 0x16, 0x28, 0xae, 0xd2, 0xa6,
 							0xab, 0xf7, 0x15, 0x88, 0x09, 0xcf, 0x4f, 0x3c };
 	Aes<128> a(input, key);
-	std::vector<word> cipher_text = a.cipher();
+	std::vector<word> cipher_text = a.Cipher();
 	std::copy(cipher_text.begin(), cipher_text.end(), std::ostream_iterator<word>(std::cout, "\n"));
 
 }
@@ -159,56 +159,56 @@ void testers::test_inv_cipher() {
 	std::vector<byte> key = { 0x2b, 0x7e, 0x15, 0x16, 0x28, 0xae, 0xd2, 0xa6,
 							0xab, 0xf7, 0x15, 0x88, 0x09, 0xcf, 0x4f, 0x3c };
 	Aes<128> a(input, key);
-	std::vector<word> cipher_text = a.cipher();
+	std::vector<word> cipher_text = a.Cipher();
 	std::vector<word> plaintext = a.InvCipher();
 	std::copy(plaintext.begin(), plaintext.end(), std::ostream_iterator<word>(std::cout, "\n"));
 }
 
 void testers::test_cipher(std::vector<byte> input, std::vector<byte> key) {
 	Aes<128> a(input, key);
-	std::vector<word> cipher_text = a.cipher();
+	std::vector<word> cipher_text = a.Cipher();
 	std::copy(cipher_text.begin(), cipher_text.end(), std::ostream_iterator<word>(std::cout, "\n"));
 
 }
 void testers::test_inv_cipher(std::vector<byte> input, std::vector<byte> key) {
 	Aes<128> a(input, key);
-	std::vector<word> cipher_text = a.cipher();
+	std::vector<word> cipher_text = a.Cipher();
 	std::vector<word> plaintext = a.InvCipher();
 	std::copy(plaintext.begin(), plaintext.end(), std::ostream_iterator<word>(std::cout, "\n"));
 }
 void testers::test_eq_inv_cipher(std::vector<byte> input, std::vector<byte> key) {
 	Aes<128> a(input, key);
-	std::vector<word> cipher_text = a.cipher();
+	std::vector<word> cipher_text = a.Cipher();
 	std::vector<word> plaintext = a.EqInvCipher();
 	std::copy(plaintext.begin(), plaintext.end(), std::ostream_iterator<word>(std::cout, "\n"));
 }
 
 void testers::test_cipher192(std::vector<byte> input, std::vector<byte> key) {
 	Aes<192> a(input, key);
-	std::vector<word> cipher_text = a.cipher();
+	std::vector<word> cipher_text = a.Cipher();
 	std::copy(cipher_text.begin(), cipher_text.end(), std::ostream_iterator<word>(std::cout, "\n"));
 }
 void testers::test_inv_cipher192(std::vector<byte> input, std::vector<byte> key) {
 	Aes<192> a(input, key);
-	std::vector<word> cipher_text = a.cipher();
+	std::vector<word> cipher_text = a.Cipher();
 	std::vector<word> plaintext = a.EqInvCipher();
 	std::copy(plaintext.begin(), plaintext.end(), std::ostream_iterator<word>(std::cout, "\n"));
 }
 void testers::test_cipher256(std::vector<byte> input, std::vector<byte> key) {
 	Aes<256> a(input, key);
-	std::vector<word> cipher_text = a.cipher();
+	std::vector<word> cipher_text = a.Cipher();
 	std::copy(cipher_text.begin(), cipher_text.end(), std::ostream_iterator<word>(std::cout, "\n"));
 }
 void testers::test_inv_cipher256(std::vector<byte> input, std::vector<byte> key) {
 	Aes<256> a(input, key);
-	std::vector<word> cipher_text = a.cipher();
+	std::vector<word> cipher_text = a.Cipher();
 	std::vector<word> plaintext = a.EqInvCipher();
 	std::copy(plaintext.begin(), plaintext.end(), std::ostream_iterator<word>(std::cout, "\n"));
 }
 void testers::multiple_test() {
 	for (int i = 0; i < 1000; ++i) {
 		Aes<128> a;
-		std::vector<word> cipher_text = a.cipher();
+		std::vector<word> cipher_text = a.Cipher();
 		std::vector<word> plaintext = a.InvCipher();
 	}
 
