@@ -9,7 +9,8 @@ namespace my_cryptography_lib {
 
 	template <std::size_t T>
 	struct AES_type {
-		static_assert(std::is_same<T, T>::value, "Using the generic template is not allowed.");
+		//static_assert(std::is_same<T, T>::value, "Using the generic template is not allowed.");
+		static_assert(T == T, "Using the generic template is not allowed.");
 	};
 
 	template <>
